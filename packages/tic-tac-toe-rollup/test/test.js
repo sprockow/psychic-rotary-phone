@@ -1,53 +1,232 @@
-const assert = require('assert');
-const howLongTillLunch = require('..');
+const {TicTacToeBoard, ticTacUtils} = require('..');
 
-function MockDate () {
-	this.date = 0;
-	this.hours = 0;
-	this.minutes = 0;
-	this.seconds = 0;
-	this.milliseconds = 0;
-};
+describe('TicTacToeBoard', () => {
+	describe('basic utils', () => {
+		const samplePositions = [
+			[null, null, 'PLAYER_X'],
+			[null, 'PLAYER_0', null],
+			[null, 'PLAYER_X', 'PLAYER_0']
+		]
+	
+		it('can getRow', () => {
+			expect(ticTacUtils.getRow(samplePositions, 0)).toEqual([null, null, 'PLAYER_X'])
+		})
+	
+		it('can getColumn', () => {
+			expect(ticTacUtils.getColumn(samplePositions, 1)).toEqual([null, 'PLAYER_0', 'PLAYER_X'])
+		})
+	
+		it('can get top right diagonal', () => {
+			expect(ticTacUtils.getTopRightDiagonal(samplePositions)).toEqual(['PLAYER_X', 'PLAYER_0', null])
+		})
+	
+		it('can get top left diagonal', () => {
+			expect(ticTacUtils.getTopLeftDiagonal(samplePositions)).toEqual([null, 'PLAYER_0', 'PLAYER_0'])
+		})
 
-Object.assign(MockDate.prototype, {
-	getDate () { return this.date; },
-	setDate (date) { this.date = date; },
-	setHours (h) { this.hours = h; },
-	setMinutes (m) { this.minutes = m; },
-	setSeconds (s) { this.seconds = s; },
-	setMilliseconds (ms) { this.milliseconds = ms; },
-	valueOf () {
-		return (
-			this.milliseconds +
-			this.seconds * 1e3 +
-			this.minutes * 1e3 * 60 +
-			this.hours * 1e3 * 60 * 60 +
-			this.date * 1e3 * 60 * 60 * 24
-		);
-	}
-});
+		it('can check all positions and detect full board', () => {
+			const notFullBoard = [
+				[null, null, 'PLAYER_X'],
+				[null, 'PLAYER_0', null],
+				[null, 'PLAYER_X', 'PLAYER_0']
+			]
 
-const now = new MockDate();
-MockDate.now = () => now.valueOf();
+			const fullBoard = [
+				['PLAYER_X', 'PLAYER_X', 'PLAYER_X'],
+				['PLAYER_X', 'PLAYER_X', 'PLAYER_X'],
+				['PLAYER_X', 'PLAYER_X', 'PLAYER_X']
+			]
 
-global.Date = MockDate;
+			expect(ticTacUtils.allPositionsFilled(fullBoard)).toEqual(true);
+			expect(ticTacUtils.allPositionsFilled(notFullBoard)).toEqual(false);
+		});
 
-function test(hours, minutes, seconds, expected) {
-	now.setHours(hours);
-	now.setMinutes(minutes);
-	now.setSeconds(seconds);
+		describe('not mutating board positions', () => {
+			it('can create a copy of a row with a new position value', () => {
+				const row = ['PLAYER_X', 'PLAYER_X', 'PLAYER_X'];
+				const replacementRow = ticTacUtils.insertNewPositionIntoRow(row, 0, 'PLAYER_0');
+	
+				expect(replacementRow).toEqual(['PLAYER_0', 'PLAYER_X', 'PLAYER_X'])
+				
+			})
+	
+			it('can create a copy of a row with a new position value', () => {
+				const row = ['PLAYER_X', 'PLAYER_X', 'PLAYER_X'];
+				const replacementRow = ticTacUtils.insertNewPositionIntoRow(row, 0, 'PLAYER_X');
+				
+				expect(replacementRow).not.toBe(row);
+			})
 
-	assert.equal(howLongTillLunch(...lunchtime), expected);
-	console.log(`\u001B[32m✓\u001B[39m ${expected}`);
-}
+			it('can create an copy of the board with a new row', () => {
+				const samplePositions = [
+					[null, null, 'PLAYER_X'],
+					[null, 'PLAYER_0', null],
+					[null, 'PLAYER_X', 'PLAYER_0']
+				]
 
-let lunchtime = [ 12, 30 ];
-test(11, 30, 0, '1 hour');
-test(10, 30, 0, '2 hours');
-test(12, 25, 0, '5 minutes');
-test(12, 29, 15, '45 seconds');
-test(13, 30, 0, '23 hours');
+				const newPositions = ticTacUtils.insertNewRowIntoPositions([null, 'PLAYER_X', 'PLAYER_X'], 0, samplePositions)
 
-// some of us like an early lunch
-lunchtime = [ 11, 0 ];
-test(10, 30, 0, '30 minutes');
+				expect(newPositions).toEqual(
+
+					[
+						[null, 'PLAYER_X', 'PLAYER_X'],
+						[null, 'PLAYER_0', null],
+						[null, 'PLAYER_X', 'PLAYER_0']
+					]
+				)
+			})
+
+		});
+
+	});
+
+	describe('can calculate winning player', () => {
+
+		it ('returns undefined when no one has won', () => {
+			const nonWinningBoard = [
+				[null, null, 'PLAYER_X'],
+				[null, 'PLAYER_0', null],
+				[null, 'PLAYER_X', 'PLAYER_0']
+			];
+
+			expect(ticTacUtils.getWinningPlayer(nonWinningBoard)).toEqual(undefined)
+		});
+
+		it('returns PLAYER_0 for diagonal win', () => {
+			const winningDiagonalBoard = [
+				['PLAYER_0', null, 'PLAYER_X'],
+				[null, 'PLAYER_0', null],
+				[null, 'PLAYER_X', 'PLAYER_0']
+			];
+
+			expect(ticTacUtils.getWinningPlayer(winningDiagonalBoard)).toEqual('PLAYER_0')
+		})
+
+		it('returns PLAYER_0 for winningRowBoard', () => {
+
+			const winningRowBoard = [
+				['PLAYER_0', 'PLAYER_0', 'PLAYER_0'],
+				[null, 'PLAYER_0', null],
+				[null, 'PLAYER_X', 'PLAYER_0']
+			];
+
+			expect(ticTacUtils.getWinningPlayer(winningRowBoard)).toEqual('PLAYER_0')
+		})
+
+
+		it('returns PLAYER_X for winningColumnBoard', () => {
+
+			const winningColumnBoard = [
+				['PLAYER_0', null, 'PLAYER_X'],
+				[null, 'PLAYER_0', 'PLAYER_X'],
+				[null, 'PLAYER_X', 'PLAYER_X']
+			];
+
+			expect(ticTacUtils.getWinningPlayer(winningColumnBoard)).toEqual('PLAYER_X')
+		})
+
+	});
+	
+	describe('initializes game parameters with defaults', () => {
+
+		it ('initializes with no overrides', () => {
+			const gameboard = ticTacUtils.initializeGameParameters()
+			expect(gameboard.initialPositions.length).toEqual(3);
+			expect(gameboard.players.length).toEqual(2);
+			expect(gameboard.startingPlayerIndex).toEqual(0);
+			expect(gameboard.initialPositions).toEqual(expect.arrayContaining([[null, null, null], [null, null, null], [null, null, null]]))
+		})
+		
+	});
+
+	describe('play next turn', () => {
+
+		const nonWinningBoard = [
+			[null, null, 'PLAYER_X'],
+			[null, 'PLAYER_0', null],
+			[null, 'PLAYER_X', 'PLAYER_0']
+		];
+
+		const players = ['PLAYER_0', 'PLAYER_X'];
+
+		it('when not a draw or win returns positions and player index', () => {
+			const results = ticTacUtils.playNextTurn({
+				positions: nonWinningBoard,
+				currentPlayersTurnIndex: 0,
+				players,
+				rowIndex: 0,
+				columnIndex: 1
+			});
+
+			expect(results.positions).toEqual([
+				[null, 'PLAYER_0', 'PLAYER_X'],
+				[null, 'PLAYER_0', null],
+				[null, 'PLAYER_X', 'PLAYER_0']
+			]);
+
+			expect(results.currentPlayersTurnIndex).toEqual(1);
+
+			expect(results.isDraw).toEqual(undefined);
+			expect(results.winningPlayer).toEqual(undefined)
+
+		});
+
+		it('when player wins, returns positions and winning player', () => {
+			const results = ticTacUtils.playNextTurn({
+				positions: nonWinningBoard,
+				currentPlayersTurnIndex: 0,
+				players,
+				rowIndex: 0,
+				columnIndex: 0
+			});
+
+			expect(results.positions).toEqual([
+				['PLAYER_0', null, 'PLAYER_X'],
+				[null, 'PLAYER_0', null],
+				[null, 'PLAYER_X', 'PLAYER_0']
+			]);
+
+			expect(results.currentPlayersTurnIndex).toEqual(undefined);
+
+			expect(results.isDraw).toEqual(undefined);
+			expect(results.winningPlayer).toEqual('PLAYER_0')
+
+		});
+
+		it('when players draw, returns positions and isDraw', () => {
+			const almostDraw = [
+				['PLAYER_X', 'PLAYER_0', 'PLAYER_X'],
+				['PLAYER_X', 'PLAYER_0', 'PLAYER_X'],
+				[null, 'PLAYER_X', 'PLAYER_0']
+			];
+
+			const results = ticTacUtils.playNextTurn({
+				positions: almostDraw,
+				currentPlayersTurnIndex: 0,
+				players,
+				rowIndex: 2,
+				columnIndex: 0
+			});
+
+			expect(results.positions).toEqual([
+				['PLAYER_X', 'PLAYER_0', 'PLAYER_X'],
+				['PLAYER_X', 'PLAYER_0', 'PLAYER_X'],
+				['PLAYER_0', 'PLAYER_X', 'PLAYER_0']
+			]);
+
+			expect(results.currentPlayersTurnIndex).toEqual(undefined);
+
+			expect(results.isDraw).toEqual(true);
+			expect(results.winningPlayer).toEqual(undefined)
+
+		});
+	})
+
+	describe('start game', () => {
+		it('calling start game with no overrides', () => {
+			const {positions, currentPlayersTurnIndex, players, playNextTurn} = ticTacUtils.startGame();
+
+			expect(positions).toEqual([[null, null, null], [null, null, null], [null, null, null]])
+		})
+	})
+})
