@@ -79,7 +79,7 @@ export function getWinningPlayer(positions) {
 }
 
 export function getNextPlayerIndex(currentPlayersTurn, players) {
-  return currentPlayersTurn + 1 % players.length;
+  return (currentPlayersTurn + 1) % players.length;
 }
 
 export function getPosition(positions, rowIndex, columnIndex) {
@@ -145,7 +145,14 @@ export function playNextTurn({rowIndex, columnIndex, positions, currentPlayersTu
 
   return {
     positions: newPositions,
-    currentPlayersTurnIndex: nextPlayersTurnIndex
+    currentPlayersTurnIndex: nextPlayersTurnIndex,
+    playNextTurn:  ({rowIndex, columnIndex}) => 
+      playNextTurn({
+        rowIndex, columnIndex,
+        players,
+        currentPlayersTurnIndex: nextPlayersTurnIndex,
+        positions: newPositions
+      })
   }
 }
 
@@ -162,6 +169,7 @@ export function startGame(gameParameters) {
         rowIndex, columnIndex,
         players,
         currentPlayersTurnIndex: startingPlayerIndex,
+        positions: initialPositions
       })
   }
 

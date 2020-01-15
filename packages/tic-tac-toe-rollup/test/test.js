@@ -224,9 +224,54 @@ describe('TicTacToeBoard', () => {
 
 	describe('start game', () => {
 		it('calling start game with no overrides', () => {
-			const {positions, currentPlayersTurnIndex, players, playNextTurn} = ticTacUtils.startGame();
+			let positions, playNextTurn, currentPlayersTurnIndex;
+
+			({playNextTurn, positions, currentPlayersTurnIndex} = ticTacUtils.startGame());
 
 			expect(positions).toEqual([[null, null, null], [null, null, null], [null, null, null]])
+
+			expect(currentPlayersTurnIndex).toEqual(0);
+
+			({positions, currentPlayersTurnIndex, playNextTurn} = playNextTurn({
+				rowIndex: 0,
+				columnIndex: 0
+			}));
+
+			expect(positions).toEqual([['PLAYER_0', null, null], [null, null, null], [null, null, null]]);
+			expect(currentPlayersTurnIndex).toEqual(1);
+
+			({positions, currentPlayersTurnIndex, playNextTurn} = playNextTurn({
+				rowIndex: 0,
+				columnIndex: 1
+			}));
+
+			expect(positions).toEqual([['PLAYER_0', 'PLAYER_X', null], [null, null, null], [null, null, null]]);
+			expect(currentPlayersTurnIndex).toEqual(0);
+
+			({positions, currentPlayersTurnIndex, playNextTurn} = playNextTurn({
+				rowIndex: 1,
+				columnIndex: 0
+			}));
+
+			expect(positions).toEqual([['PLAYER_0', 'PLAYER_X', null], ['PLAYER_0', null, null], [null, null, null]]);
+			expect(currentPlayersTurnIndex).toEqual(1);
+
+			({positions, currentPlayersTurnIndex, playNextTurn} = playNextTurn({
+				rowIndex: 0,
+				columnIndex: 2
+			}));
+
+			expect(positions).toEqual([['PLAYER_0', 'PLAYER_X', 'PLAYER_X'], ['PLAYER_0', null, null], [null, null, null]]);
+			expect(currentPlayersTurnIndex).toEqual(0);
+
+			const finalResults = playNextTurn({
+				rowIndex: 2,
+				columnIndex: 0
+			});
+
+			expect(finalResults.positions).toEqual([['PLAYER_0', 'PLAYER_X', 'PLAYER_X'], ['PLAYER_0', null, null], ['PLAYER_0', null, null]]);
+			
+			expect(finalResults.winningPlayer).toEqual('PLAYER_0')
 		})
 	})
 })
