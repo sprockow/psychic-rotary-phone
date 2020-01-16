@@ -1,10 +1,12 @@
 {
   "name": "rollup-starter-app",
   "devDependencies": {
+    "node-sass": "^4.13.1",
     "npm-run-all": "^4.1.5",
     "rollup": "^1.16.2",
     "rollup-plugin-commonjs": "^10.0.0",
     "rollup-plugin-node-resolve": "^5.1.0",
+    "rollup-plugin-postcss": "^2.0.3",
     "rollup-plugin-terser": "^5.0.0",
     "serve": "^11.0.2"
   },
