@@ -1,4 +1,6 @@
-const { initializeGameController } = require('../dist/how-long-till-lunch.cjs');
+const {
+  initializeGameController,
+} = require('../dist/tic-tac-toe-board-example.cjs');
 
 describe('game controller', () => {
   it('calls startGame and setupClickListeners', () => {

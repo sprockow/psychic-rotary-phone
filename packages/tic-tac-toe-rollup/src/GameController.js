@@ -45,7 +45,15 @@ export default function initializeGameController({
       winningPlayer,
     } = startGame());
 
-    render();
+    render({
+      formatBoardButton,
+      formatBoard,
+      positions,
+      isDraw,
+      winningPlayer,
+      currentPlayersTurnIndex,
+      players,
+    });
   }
 
   const unsubscribeListeners = setupClickListeners({

@@ -1,4 +1,7 @@
-const { ticTacUtils, startGame } = require('../dist/how-long-till-lunch.cjs');
+const {
+  ticTacUtils,
+  startGame,
+} = require('../dist/tic-tac-toe-board-example.cjs');
 
 describe('TicTacToeBoard', () => {
   describe('basic utils', () => {
