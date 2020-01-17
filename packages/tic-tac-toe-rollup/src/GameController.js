@@ -3,6 +3,7 @@ export default function initializeGameController({
   formatBoardButton,
   formatBoard,
   setupClickListeners,
+  gameParameters,
 }) {
   let positions,
     isDraw,
@@ -11,7 +12,9 @@ export default function initializeGameController({
     players,
     currentPlayersTurnIndex;
 
-  ({ playNextTurn, players, positions, currentPlayersTurnIndex } = startGame());
+  ({ playNextTurn, players, positions, currentPlayersTurnIndex } = startGame(
+    gameParameters,
+  ));
 
   function onBoardPositionClicked({ rowIndex, columnIndex }) {
     ({
@@ -43,7 +46,7 @@ export default function initializeGameController({
       currentPlayersTurnIndex,
       isDraw,
       winningPlayer,
-    } = startGame());
+    } = startGame(gameParameters));
 
     render({
       formatBoardButton,

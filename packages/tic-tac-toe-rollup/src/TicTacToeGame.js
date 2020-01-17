@@ -1,8 +1,3 @@
-const PLAYER_0 = 'PLAYER_0';
-const PLAYER_X = 'PLAYER_X';
-
-const DEFAULT_GAME_BOARD_SIZE = 3;
-
 export function initializeBoardPositions(size) {
   // create an sizexsize matrix
   const positions = new Array(size).fill(null);
@@ -184,16 +179,17 @@ export function playNextTurn({
   };
 }
 
-export default function startGame(gameParameters) {
-  const {
-    players,
-    initialPositions,
-    startingPlayerIndex,
-  } = initializeGameParameters(gameParameters);
+export default function startGame({
+  players,
+  initialPositions,
+  startingPlayerIndex,
+  size,
+}) {
+  const positions = initialPositions || initializeBoardPositions(size);
 
   return {
     players,
-    positions: initialPositions,
+    positions,
     currentPlayersTurnIndex: startingPlayerIndex,
     playNextTurn: ({ rowIndex, columnIndex }) =>
       playNextTurn({
@@ -201,21 +197,7 @@ export default function startGame(gameParameters) {
         columnIndex,
         players,
         currentPlayersTurnIndex: startingPlayerIndex,
-        positions: initialPositions,
+        positions,
       }),
-  };
-}
-
-export function initializeGameParameters({
-  players = [PLAYER_0, PLAYER_X],
-  startingPlayerIndex = 0,
-  initialPositions,
-  size = DEFAULT_GAME_BOARD_SIZE,
-} = {}) {
-  return {
-    players,
-    startingPlayerIndex,
-    size,
-    initialPositions: initialPositions || initializeBoardPositions(size),
   };
 }

@@ -1,6 +1,7 @@
 const {
   ticTacUtils,
   startGame,
+  initializeGameParameters,
 } = require('../dist/tic-tac-toe-board-example.cjs');
 
 describe('TicTacToeBoard', () => {
@@ -153,17 +154,10 @@ describe('TicTacToeBoard', () => {
 
   describe('initializes game parameters with defaults', () => {
     it('initializes with no overrides', () => {
-      const gameboard = ticTacUtils.initializeGameParameters();
-      expect(gameboard.initialPositions.length).toEqual(3);
+      const gameboard = initializeGameParameters();
+      expect(gameboard.initialPositions).toEqual(undefined);
       expect(gameboard.players.length).toEqual(2);
       expect(gameboard.startingPlayerIndex).toEqual(0);
-      expect(gameboard.initialPositions).toEqual(
-        expect.arrayContaining([
-          [null, null, null],
-          [null, null, null],
-          [null, null, null],
-        ]),
-      );
     });
   });
 
@@ -250,7 +244,11 @@ describe('TicTacToeBoard', () => {
     it('calling start game with no overrides', () => {
       let positions, playNextTurn, currentPlayersTurnIndex;
 
-      ({ playNextTurn, positions, currentPlayersTurnIndex } = startGame());
+      const gameParameters = initializeGameParameters();
+
+      ({ playNextTurn, positions, currentPlayersTurnIndex } = startGame(
+        gameParameters,
+      ));
 
       expect(positions).toEqual([
         [null, null, null],
