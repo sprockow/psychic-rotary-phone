@@ -1,6 +1,7 @@
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import pkg from './package.json';
+import postcss from 'rollup-plugin-postcss';
 
 export default [
   // browser-friendly UMD build
@@ -12,6 +13,11 @@ export default [
       format: 'umd',
     },
     plugins: [
+      postcss({
+        extract: false,
+        modules: true,
+        use: ['sass'],
+      }),
       resolve(), // so Rollup can find `ms`
       commonjs(), // so Rollup can convert `ms` to an ES module
     ],
@@ -25,6 +31,13 @@ export default [
   // `file` and `format` for each target)
   {
     input: 'src/main.js',
+    plugins: [
+      postcss({
+        extract: false,
+        modules: true,
+        use: ['sass'],
+      }),
+    ],
     external: ['ms'],
     output: [
       { file: pkg.main, format: 'cjs' },
