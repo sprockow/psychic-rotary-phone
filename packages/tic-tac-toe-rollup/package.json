@@ -4,9 +4,6 @@
   "main": "dist/tic-tac-toe-board-example.cjs.js",
   "module": "dist/tic-tac-toe-board-example.esm.js",
   "browser": "dist/tic-tac-toe-board-example.umd.js",
-  "dependencies": {
-    "ms": "^2.0.0"
-  },
   "devDependencies": {
     "jest": "^24.9.0",
     "node-sass": "^4.13.1",

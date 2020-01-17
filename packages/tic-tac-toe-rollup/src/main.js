@@ -1,6 +1,6 @@
 import startGame, * as ticTacUtils from './TicTacToeGame.js';
 import initializeGameController, * as gameControllerUtils from './GameController';
-import createGameUI from './GameUI';
+import createGameUI from './ClassicGameUI';
 
 const PLAYER_0 = 'PLAYER_0';
 const PLAYER_X = 'PLAYER_X';

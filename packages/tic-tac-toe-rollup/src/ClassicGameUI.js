@@ -1,4 +1,4 @@
-import css from './GameUI.scss';
+import css from './ClassicGameUI.scss';
 
 export default function createGameUI({ size = 3 } = {}) {
   const gameContainer = createGameBoard({ size });
@@ -24,11 +24,11 @@ export function createGameBoard({ size }) {
   gameBoardContainer.classList.add(css.gameContainer);
 
   gameBoardContainer.innerHTML = `
-  <h1 class=${css.gameTitle}>Tic Tac Toe</h1>
-  <div id='tic-tac-toe-board' class=${css.ticTacToeBoard}>
-  </div>
-  <button id="new-game-button" class=${css.newGameButton}> New Game</button>
-  <h2 class=${css.gameStateLabel} id="game-state"></h2>
+    <h1 class=${css.gameTitle}>Tic Tac Toe</h1>
+    <div id='tic-tac-toe-board' class=${css.ticTacToeBoard}>
+    </div>
+    <button id="new-game-button" class=${css.newGameButton}> New Game</button>
+    <h2 class=${css.gameStateLabel} id="game-state"></h2>
   `;
 
   for (let i = 0; i < size * size; i++) {
