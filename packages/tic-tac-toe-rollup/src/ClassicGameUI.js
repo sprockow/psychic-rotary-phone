@@ -29,7 +29,7 @@ export function createGameBoard(size) {
   <h1 class=${css.gameTitle}>Tic Tac Toe</h1>
   <div id='tic-tac-toe-board' class=${css.ticTacToeBoard}>
   </div>
-  <button id="new-game-button" class=${css.newGameButton}> New Game</button>
+  <button id="new-game-button" aria-roledescription="start a new game" class=${css.newGameButton}> New Game</button>
   <h2 class=${css.gameStateLabel} id="game-state"></h2>
   `;
 
