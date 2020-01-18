@@ -1,5 +1,29 @@
+// default export. This can be used to start a new game. It will return a curried playNextTurn function that can be used to play the first turn. Each time playNextTurn is called, it returns the new game state and a curried copy of itself which can be used to play the next turn. playNextTurn can be called until the game is in a draw or winning state.
+export default function startGame({
+  players,
+  initialPositions,
+  startingPlayerIndex,
+  size,
+}) {
+  const positions = initialPositions || initializeBoardPositions(size);
+
+  return {
+    players,
+    positions,
+    currentPlayersTurnIndex: startingPlayerIndex,
+    playNextTurn: ({ rowIndex, columnIndex }) =>
+      playNextTurn({
+        rowIndex,
+        columnIndex,
+        players,
+        currentPlayersTurnIndex: startingPlayerIndex,
+        positions,
+      }),
+  };
+}
+
+// create an sizexsize matrix of null values
 export function initializeBoardPositions(size) {
-  // create an sizexsize matrix
   const positions = new Array(size).fill(null);
   for (let i = 0; i < size; i++) {
     positions[i] = new Array(size).fill(null);
@@ -8,6 +32,7 @@ export function initializeBoardPositions(size) {
   return positions;
 }
 
+// This will be used to check if all given positions are from a single player
 export function allPositionsFromSinglePlayer(positionsArray) {
   const playerFromFirstPosition = positionsArray[0];
 
@@ -19,6 +44,8 @@ export function allPositionsFromSinglePlayer(positionsArray) {
 
   return playerFromFirstPosition;
 }
+
+// The following helper methods will be use to get rows, columns diagonals
 
 export function getTopLeftDiagonal(positions) {
   return positions.reduce((acc, row, index) => [...acc, row[index]], []);
@@ -39,6 +66,7 @@ export function getColumn(positions, columnIndex) {
   return positions.reduce((acc, row) => [...acc, row[columnIndex]], []);
 }
 
+// This function will use the above helper methods and the allPositionsFromSinglePlayer to calculate whether the board has a new winning player
 export function getWinningPlayer(positions) {
   let winningPlayer;
   const topLeftDiagonal = getTopLeftDiagonal(positions);
@@ -74,6 +102,7 @@ export function getWinningPlayer(positions) {
   return;
 }
 
+// increments player index, but wraps around back to 0
 export function getNextPlayerIndex(currentPlayersTurn, players) {
   return (currentPlayersTurn + 1) % players.length;
 }
@@ -82,6 +111,7 @@ export function getPosition(positions, rowIndex, columnIndex) {
   return positions[rowIndex][columnIndex];
 }
 
+// The following two helper methods are use to create a copy of the existing positions matrix, so that we can avoid mutating the previous matrix
 export function insertNewPositionIntoRow(row, columnIndex, positionValue) {
   return [
     ...row.slice(0, columnIndex),
@@ -98,6 +128,7 @@ export function insertNewRowIntoPositions(row, rowIndex, positions) {
   ];
 }
 
+// This method is used to determine whether all positions are filled. This is useful, because if there is no winning player, then the game must be a draw
 export function allPositionsFilled(positions) {
   const size = positions.length;
   for (let rowIndex = 0; rowIndex < size; rowIndex++) {
@@ -113,6 +144,7 @@ export function allPositionsFilled(positions) {
   return true;
 }
 
+// This function will take in the current game state and the requested move coordinates. It will play the move and then returns the new gamestate along with a curried playNextTurn function that can be called again.
 export function playNextTurn({
   rowIndex,
   columnIndex,
@@ -175,29 +207,6 @@ export function playNextTurn({
         players,
         currentPlayersTurnIndex: nextPlayersTurnIndex,
         positions: newPositions,
-      }),
-  };
-}
-
-export default function startGame({
-  players,
-  initialPositions,
-  startingPlayerIndex,
-  size,
-}) {
-  const positions = initialPositions || initializeBoardPositions(size);
-
-  return {
-    players,
-    positions,
-    currentPlayersTurnIndex: startingPlayerIndex,
-    playNextTurn: ({ rowIndex, columnIndex }) =>
-      playNextTurn({
-        rowIndex,
-        columnIndex,
-        players,
-        currentPlayersTurnIndex: startingPlayerIndex,
-        positions,
       }),
   };
 }

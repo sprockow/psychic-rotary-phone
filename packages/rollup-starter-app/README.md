@@ -2,8 +2,7 @@
 
 This repo contains a bare-bones example of how to create an application using Rollup, including importing a module from `node_modules` and converting it from CommonJS.
 
-*See also https://github.com/rollup/rollup-starter-lib*
-
+_See also https://github.com/rollup/rollup-starter-lib_
 
 ## Getting started
 
@@ -15,7 +14,7 @@ cd rollup-starter-app
 npm install
 ```
 
-The `public/index.html` file contains a `<script src='bundle.js'>` tag, which means we need to create `public/bundle.js`. The `rollup.config.js` file tells Rollup how to create this bundle, starting with `src/main.js` and including all its dependencies, including [date-fns](https://date-fns.org).
+The `public/index.html` file contains a `<script src='bundle.js'>` tag, which means we need to create `public/bundle.js`. The `rollup.config.js` file tells Rollup how to create this bundle, starting with `src/main.js`.
 
 `npm run build` builds the application to `public/bundle.js`, along with a sourcemap file for debugging.
 
