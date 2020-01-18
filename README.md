@@ -1,5 +1,9 @@
 # Tic Tac Toe Library
 
+Github library is purposely obscurley named for now, until the library is ready publishing...
+
+## Getting started
+
 This library could be hypothetically installed (once it is actually published to npm) by running:
 
 `npm install --save tic-tac-toe-board-example`
