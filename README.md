@@ -96,4 +96,3 @@ For example, let's say you wanted to create your own custome game board. You sim
   Opted to use buttons for the board, so that they are easily key navigable and accessible.
 
 
-
