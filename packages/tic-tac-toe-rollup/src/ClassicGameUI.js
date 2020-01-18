@@ -1,7 +1,8 @@
 import css from './ClassicGameUI.scss';
 
-export default function createGameUI({ size = 3 } = {}) {
-  const gameContainer = createGameBoard({ size });
+// This method will create a DOM fragment that can be mounted into the target application, as well as some curried methods for updating the UI and setting click listeners up. Those methods will be used by the game controller
+export default function createGameUI({ size } = {}) {
+  const gameContainer = createGameBoard(size);
 
   const formatBoard = args => formatBoardWithinContainer(args, gameContainer);
 
@@ -19,16 +20,17 @@ export default function createGameUI({ size = 3 } = {}) {
   };
 }
 
-export function createGameBoard({ size }) {
+// This is method that actually create the game DOM. It references css classes via the css modules spec. Rollup will bundle the css with js assets.
+export function createGameBoard(size) {
   const gameBoardContainer = document.createElement('div');
   gameBoardContainer.classList.add(css.gameContainer);
 
   gameBoardContainer.innerHTML = `
-    <h1 class=${css.gameTitle}>Tic Tac Toe</h1>
-    <div id='tic-tac-toe-board' class=${css.ticTacToeBoard}>
-    </div>
-    <button id="new-game-button" class=${css.newGameButton}> New Game</button>
-    <h2 class=${css.gameStateLabel} id="game-state"></h2>
+  <h1 class=${css.gameTitle}>Tic Tac Toe</h1>
+  <div id='tic-tac-toe-board' class=${css.ticTacToeBoard}>
+  </div>
+  <button id="new-game-button" class=${css.newGameButton}> New Game</button>
+  <h2 class=${css.gameStateLabel} id="game-state"></h2>
   `;
 
   for (let i = 0; i < size * size; i++) {
@@ -38,7 +40,7 @@ export function createGameBoard({ size }) {
     const rowIndex = Math.floor(i / 3);
 
     newButton.setAttribute(
-      'aria-role',
+      'aria-roledescription',
       `Button at board-position ${rowIndex}, ${columnIndex}`,
     );
 
@@ -49,6 +51,8 @@ export function createGameBoard({ size }) {
 
   return gameBoardContainer;
 }
+
+// The following methods are simply getters to grab pieces of the DOM
 
 export function getBoard({ gameContainer }) {
   return gameContainer.querySelector('#tic-tac-toe-board');
@@ -69,6 +73,7 @@ export function getGameStateLabel({ gameContainer }) {
   return gameContainer.querySelector('#game-state');
 }
 
+// This helper method can be used to create text content (who's turn is it, who's won, etc.)
 export function createLabelForUser(player) {
   return player === 'PLAYER_0' ? 'Circle Player' : 'X Player';
 }
@@ -127,6 +132,7 @@ export function formatBoardWithinContainer(gameState, gameContainer) {
   }
 }
 
+// We use a single click listener for the entire board. So when a click event is registered, we need to use this logic to find out where the button is in relation to the board
 export function getCoordinatesOfPositionButton(positionButton) {
   const siblings = Array.from(positionButton.parentElement.children);
   const indexOfButton = siblings.indexOf(positionButton);

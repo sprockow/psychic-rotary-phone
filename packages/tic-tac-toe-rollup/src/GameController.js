@@ -1,3 +1,4 @@
+// The controller is UI agnostic. It takes in a function to setup click listeners and functions to update the UI. It will handle the logic flow of translating UI events into game model updates which it will then pass back to the UI. It returns a method to unsubscribe the click listeners
 export default function initializeGameController({
   startGame,
   formatBoardButton,

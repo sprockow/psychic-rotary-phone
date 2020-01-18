@@ -33,13 +33,18 @@ export default function launchTicTacToeBoard(rootElement) {
 
   rootElement.appendChild(gameContainer);
 
-  initializeGameController({
+  const { unsubscribeListeners } = initializeGameController({
     gameParameters,
     startGame,
     setupClickListeners,
     formatBoard,
     formatBoardButton,
   });
+
+  return {
+    gameContainer,
+    unsubscribeListeners,
+  };
 }
 
 launchTicTacToeBoard;
